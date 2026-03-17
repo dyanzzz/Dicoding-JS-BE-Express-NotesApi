@@ -14,7 +14,9 @@
   "description": "",
   "dependencies": {
     "express": "^5.1.0",
-    "nanoid": "^5.1.5"
+    "joi": "^18.0.2",
+    "nanoid": "^5.1.5",
+    "pg": "^8.20.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",

@@ -17,14 +17,21 @@ export const createNote = (req, res, next) => {
     return next(new InvariantError('Catatan gagal ditambahkan'));
   }
 
-  return response(res, 201, 'Catatan berhasil ditambahkan', { newNote: id });
+  return response(res, 201, 'Catatan berhasil ditambahkan', { noteId: id });
 };
 
-export const getNotes = (req, res) => {
-  return response(res, 200, 'success', { notes: notes });
+export const getNotes = (req, res, next) => {
+  const { title = '' } = req.query;
+
+  if (title !== '') {
+    const note = notes.filter((note) => note.title === title);
+    return next(new NotFoundError('Catatan tidak ditemukan'));
+  } else {
+    return response(res, 200, 'success', { notes: notes });
+  }
 };
 
-export const getNoteById = (req, res) => {
+export const getNoteById = (req, res, next) => {
   const { id } = req.params;
   const note = notes.find((n) => n.id === id);
 
@@ -35,7 +42,7 @@ export const getNoteById = (req, res) => {
   return response(res, 200, 'Catatan sukses ditampilkan', { note: note });
 };
 
-export const editNoteById = (req, res) => {
+export const editNoteById = (req, res, next) => {
   const { id } = req.params;
   const { title, tags, body } = req.body;
   const updatedAt = new Date().toISOString();
@@ -49,7 +56,7 @@ export const editNoteById = (req, res) => {
   return response(res, 200, 'Catatan berhasil diperbarui', notes[idx]);
 };
 
-export const deleteNoteById = (req, res) => {
+export const deleteNoteById = (req, res, next) => {
   const { id } = req.params;
   const idx = notes.findIndex((n) => n.id === id);
 
