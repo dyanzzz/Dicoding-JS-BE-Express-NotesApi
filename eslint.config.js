@@ -11,12 +11,7 @@ export default [
     files: ['**/*.js'],
     rules: {
       'no-console': 'off',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'no-underscore-dangle': 'off',
-      'no-param-reassign': 'off',
-      'no-use-before-define': 'off',
-      'no-shadow': 'off',
-      'no-undef': 'off',
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
     }
   }
 ];

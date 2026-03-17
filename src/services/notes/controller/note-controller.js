@@ -4,11 +4,7 @@ import response from '../../../utils/response.js';
 
 export const createNote = async (req, res, next) => {
   const { title, body, tags } = req.validated;
-  const note = await NoteRepositories.createNote({
-    title,
-    body,
-    tags
-  });
+  const note = await NoteRepositories.createNote({ title, body, tags });
 
   if (!note) {
     return next(new InvariantError('Catatan gagal ditambahkan'));
@@ -37,12 +33,7 @@ export const editNoteById = async (req, res, next) => {
   const { id } = req.params;
   const { title, body, tags } = req.validated;
  
-  const note = await NoteRepositories.editNote({
-    id,
-    title,
-    body,
-    tags
-  });
+  const note = await NoteRepositories.editNote({ id, title, body, tags });
   if (!note) {
     return next(new NotFoundError('Catatan tidak ditemukan'));
   }

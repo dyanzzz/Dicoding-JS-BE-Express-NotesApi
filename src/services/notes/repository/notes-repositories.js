@@ -28,7 +28,6 @@ class NoteRepositories {
 
     async getNotes() {
         const result = await this.pool.query('SELECT * FROM notes');
-        console.log(result.rows);
         return result.rows;
     }
 
