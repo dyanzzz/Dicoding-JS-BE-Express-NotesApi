@@ -12,7 +12,7 @@ import {
   noteQuerySchema
 } from '../../../services/notes/validator/schema.js';
 import validate from '../../../services/notes/validator/validate.js';
-import validateQuery from '../../../services/notes/validator/validateQuery.js';
+import validateQuery from '../../../services/notes/validator/validate-query.js';
 
 const router = express.Router();
 
