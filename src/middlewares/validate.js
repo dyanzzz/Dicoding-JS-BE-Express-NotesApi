@@ -4,6 +4,7 @@ const validate = (schema) => (req, res, next) => {
     allowUnknown: false,
     stripUnknown: true
   });
+  console.log('Validated data:', value);
  
   if (error) return next(error);
   req.validated = value;

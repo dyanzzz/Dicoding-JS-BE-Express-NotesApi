@@ -1,14 +1,10 @@
 import { Pool } from 'pg';
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
-
-import { Pool } from 'pg';
-import { nanoid } from 'nanoid';
-import bcrypt from 'bcrypt';
  
 class UserRepositories {
     constructor() {
-        this.pool = new Pool();
+        this._pool = new Pool();
     }
 
     async createUser({ username, password, fullname }) {
@@ -23,7 +19,8 @@ class UserRepositories {
         };
         
         const result = await this._pool.query(query);
-        return result.rows[0];
+        const data = result.rows.map(row => ({ userId: row.id }));
+        return data[0];
     }
 
     async verifyNewUsername(username) {
@@ -47,4 +44,28 @@ class UserRepositories {
         
         return result.rows[0];
     }
+
+    async verifyUserCredential(username, password) {
+        const query = {
+            text: 'SELECT id, password FROM users WHERE username = $1',
+            values: [username],
+        };
+        
+        const result = await this._pool.query(query);
+        
+        if (!result.rows.length) {
+            return null;
+        }
+
+        const user = result.rows[0];
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+        if (!isPasswordMatch) {
+            return null;
+        }
+
+        return user;
+    }
 }
+
+export default new UserRepositories();
