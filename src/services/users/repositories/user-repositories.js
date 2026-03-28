@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { nanoid } from 'nanoid';
 import bcrypt from 'bcrypt';
- 
+
 class UserRepositories {
     constructor() {
         this._pool = new Pool();
@@ -12,14 +12,14 @@ class UserRepositories {
         const hashedPassword = await bcrypt.hash(password, 10);
         const createdAt = new Date().toISOString();
         const updatedAt = createdAt;
-        
+
         const query = {
             text: 'INSERT INTO users VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
             values: [id, username, hashedPassword, fullname, createdAt, updatedAt],
         };
-        
+
         const result = await this._pool.query(query);
-        const data = result.rows.map(row => ({ userId: row.id }));
+        const data = result.rows.map((row) => ({ userId: row.id }));
         return data[0];
     }
 
@@ -28,9 +28,9 @@ class UserRepositories {
             text: 'SELECT username FROM users WHERE username = $1',
             values: [username],
         };
-        
+
         const result = await this._pool.query(query);
-        
+
         return result.rows.length > 0;
     }
 
@@ -39,9 +39,9 @@ class UserRepositories {
             text: 'SELECT * FROM users WHERE id = $1',
             values: [id],
         };
-        
+
         const result = await this._pool.query(query);
-        
+
         return result.rows[0];
     }
 
@@ -50,9 +50,9 @@ class UserRepositories {
             text: 'SELECT id, password FROM users WHERE username = $1',
             values: [username],
         };
-        
+
         const result = await this._pool.query(query);
-        
+
         if (!result.rows.length) {
             return null;
         }
@@ -72,7 +72,7 @@ class UserRepositories {
             text: 'SELECT id, username, fullname FROM users WHERE username LIKE $1',
             values: [`%${username}%`],
         };
-        
+
         const result = await this._pool.query(query);
         return result.rows;
     }

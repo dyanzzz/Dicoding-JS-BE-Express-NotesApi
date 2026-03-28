@@ -1,10 +1,10 @@
 import express from 'express';
 import {
-  createNote,
-  getNotes,
-  getNoteById,
-  editNoteById,
-  deleteNoteById
+    createNote,
+    getNotes,
+    getNoteById,
+    editNoteById,
+    deleteNoteById
 } from '../controller/note-controller.js';
 import { notePayloadSchema, noteUpdatePayloadSchema, noteQuerySchema } from '../../../services/notes/validator/schema.js';
 import validate from '../../../middlewares/validate.js';

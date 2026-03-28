@@ -7,10 +7,10 @@ class AuthenticationRepositories {
 
     async addRefreshToken(token) {    const query = {
         text: 'INSERT INTO authentications VALUES($1)',
-            values: [token],
-        };
+        values: [token],
+    };
 
-        await this.pool.query(query);
+    await this.pool.query(query);
     }
 
     async deleteRefreshToken(token) {
@@ -27,13 +27,13 @@ class AuthenticationRepositories {
             text: 'SELECT token FROM authentications WHERE token = $1',
             values: [token],
         };
-        
+
         const result = await this.pool.query(query);
-        
+
         if (!result.rows.length) {
             return false;
         }
-        
+
         return result.rows[0];
     }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable camelcase */
+
 export const up = (pgm) => {
     pgm.createTable('notes', {
         id: {

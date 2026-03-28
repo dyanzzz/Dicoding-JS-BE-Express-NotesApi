@@ -4,44 +4,44 @@ import InvariantError from '../../../exceptions/invariant-error.js';
 import NotFoundError from '../../../exceptions/not-found-error.js';
 
 export const createUser = async (req, res, next) => {
-  const { username, password, fullname } = req.validated;
- 
-  const isUsernameExist = await UserRepositories.verifyNewUsername(username);
-  if (isUsernameExist) {
-    return next(new InvariantError('Gagal menambahkan user, Username sudah digunakan.'));
-  }
- 
-  const user = await UserRepositories.createUser({
-    username,
-    password,
-    fullname,
-  });
- 
-  if (!user) {
-    return next(new InvariantError('User gagal ditambahkan'));
-  }
- 
-  return response(res, 201, 'User berhasil ditambahkan', user);
+    const { username, password, fullname } = req.validated;
+
+    const isUsernameExist = await UserRepositories.verifyNewUsername(username);
+    if (isUsernameExist) {
+        return next(new InvariantError('Gagal menambahkan user, Username sudah digunakan.'));
+    }
+
+    const user = await UserRepositories.createUser({
+        username,
+        password,
+        fullname,
+    });
+
+    if (!user) {
+        return next(new InvariantError('User gagal ditambahkan'));
+    }
+
+    return response(res, 201, 'User berhasil ditambahkan', user);
 };
 
 export const getUserById = async (req, res, next) => {
-  const { id } = req.params;
-  const user = await UserRepositories.getUserById(id);
- 
-  if (!user) {
-    return next(new NotFoundError('User tidak ditemukan'));
-  }
- 
-  return response(res, 200, 'User berhasil ditampilkan', { user });
+    const { id } = req.params;
+    const user = await UserRepositories.getUserById(id);
+
+    if (!user) {
+        return next(new NotFoundError('User tidak ditemukan'));
+    }
+
+    return response(res, 200, 'User berhasil ditampilkan', { user });
 };
 
 export const getUsersByUsername = async (req, res, next) => {
-  const username = req.query.username;
-  const user = await UserRepositories.getUsersByUsername(username);
+    const username = req.query.username;
+    const user = await UserRepositories.getUsersByUsername(username);
 
-  if (!user) {
-    return next(new NotFoundError('User tidak ditemukan'));
-  }
-  
-  return response(res, 200, 'User berhasil ditampilkan', { users: user });
+    if (!user) {
+        return next(new NotFoundError('User tidak ditemukan'));
+    }
+
+    return response(res, 200, 'User berhasil ditampilkan', { users: user });
 };

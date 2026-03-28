@@ -1,17 +1,18 @@
 import globals from 'globals';
-import { configs as jsConfigs } from '@eslint/js';
+import js from '@eslint/js';
 import daStyle from 'eslint-config-dicodingacademy';
 
 export default [
-  daStyle,
-  { files: ['**/*.js'], languageOptions: { sourceType: 'module' } },
-  { languageOptions: { globals: globals.node } },
-  jsConfigs.recommended,
-  {
-    files: ['**/*.js'],
-    rules: {
-      'no-console': 'off',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }]
+    daStyle,
+    { files: ['**/*.js'], languageOptions: { sourceType: 'module' } },
+    { languageOptions: { globals: globals.node } },
+    js.configs.recommended,
+    {
+        files: ['**/*.js'],
+        rules: {
+            'indent': ['error', 4],
+            'no-trailing-spaces': 'error',
+            'linebreak-style': ['error', 'windows'],
+        }
     }
-  }
 ];

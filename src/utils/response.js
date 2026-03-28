@@ -9,5 +9,5 @@ const response = (res, statusCode, message, data) => {
         })
         .end();
 };
- 
+
 export default response;

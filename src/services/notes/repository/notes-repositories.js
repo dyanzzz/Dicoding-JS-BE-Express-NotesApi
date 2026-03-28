@@ -48,13 +48,13 @@ class NoteRepositories {
         };
 
         const result = await this.pool.query(query);
-        
+
         if (!result.rows.length) {
             return null;
         }
-        
+
         const note = result.rows[0];
-        
+
         if (note.owner !== owner.id) {
             return null;
         }
@@ -76,14 +76,14 @@ class NoteRepositories {
 
     async editNote({ id, title, body, tags }) {
         const updatedAt = new Date().toISOString();
-    
+
         const query = {
             text: 'UPDATE notes SET title = $1, body = $2, tags = $3, updated_at = $4 WHERE id = $5 RETURNING id',
             values: [title, body, tags, updatedAt, id],
         };
-    
+
         const result = await this.pool.query(query);
-        
+
         return result.rows[0];
     }
 
@@ -92,24 +92,24 @@ class NoteRepositories {
             text: 'DELETE FROM notes WHERE id = $1 RETURNING id',
             values: [id],
         };
-    
+
         const result = await this.pool.query(query);
         return result.rows[0].id;
     }
 
     async verifyNoteAccess(noteId, userId) {
         const ownerResult = await this.verifyNoteOwner(noteId, userId);
-        
+
         if (ownerResult) {
             return ownerResult;
         }
-        
+
         const result =  await this.collaborationRepositories.verifyCollaborator(noteId, userId);
-        
+
         return result;
     }
 
-    
+
 }
 
 export default new NoteRepositories();
