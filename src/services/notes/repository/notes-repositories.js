@@ -1,11 +1,14 @@
+/* eslint-disable no-unused-vars */
 import { Pool } from 'pg';
 import { nanoid } from 'nanoid';
 import collaborationRepositories from '../../collaborations/repositories/collaboration-repositories.js';
+import CacheService from '../../../cache/redis-config.js';
 
 class NoteRepositories {
     constructor() {
         this.pool = new Pool();
         this.collaborationRepositories = collaborationRepositories;
+        this.cacheService = new CacheService();
     }
 
     async createNote({ title, body, tags, owner }) {
@@ -25,20 +28,35 @@ class NoteRepositories {
             noteId: row.id,
         }));
 
+        await this.cacheService.delete(`notes:${owner.id}`);
+
         return data[0];
     }
 
     async getNotes(owner) {
-        const query = {
-            text: `SELECT notes.* FROM notes
-            LEFT JOIN collaborations ON collaborations.note_id = notes.id
-            WHERE notes.owner = $1 OR collaborations.user_id = $1
-            GROUP BY notes.id`,
-            values: [owner.id],
-        };
+        const cacheKey = `notes:${owner.id}`;
 
-        const result = await this.pool.query(query);
-        return result.rows;
+        try {
+            const notes = await this.cacheService.get(cacheKey);
+            return JSON.parse(notes);
+        } catch (error) {
+
+            // Cache miss, get from database
+            const query = {
+                text: `SELECT notes.* FROM notes
+                LEFT JOIN collaborations ON collaborations.note_id = notes.id
+                WHERE notes.owner = $1 OR collaborations.user_id = $1
+                GROUP BY notes.id`,
+                values: [owner.id],
+            };
+
+            const result = await this.pool.query(query);
+
+            // Save to cache
+            await this.cacheService.set(cacheKey, JSON.stringify(result.rows));
+
+            return result.rows;
+        }
     }
 
     async verifyNoteOwner(id, owner) {
@@ -84,6 +102,11 @@ class NoteRepositories {
 
         const result = await this.pool.query(query);
 
+        const owner = result.rows[0].owner;
+        if (result.rows[0]) {
+            await this.cacheService.delete(`notes:${owner}`);
+        }
+
         return result.rows[0];
     }
 
@@ -94,6 +117,12 @@ class NoteRepositories {
         };
 
         const result = await this.pool.query(query);
+
+        const owner = result.rows[0].owner;
+        if (result.rows[0]) {
+            await this.cacheService.delete(`notes:${owner}`);
+        }
+
         return result.rows[0].id;
     }
 
